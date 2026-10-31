@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /qa/
+Disallow: /_originais/
+
+Sitemap: https://yankavian.felixdias.com/sitemap.xml
