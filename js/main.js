@@ -143,7 +143,7 @@
   /* Lente: o mouse enxerga o que a balança esconde */
   var palco = document.getElementById('lente');
   if (palco) {
-    var alvoX = .3, alvoY = .5, lx = .3, ly = .5, solto = true, rodando = false;
+    var alvoX = .3, alvoY = .5, lx = .3, ly = .5, rodando = false;
     function pintar() {
       lx += (alvoX - lx) * .14; ly += (alvoY - ly) * .14;
       palco.style.setProperty('--lx', (lx * 100).toFixed(2) + '%');
@@ -154,28 +154,9 @@
     function animar() { if (!rodando) { rodando = true; requestAnimationFrame(pintar); } }
     palco.addEventListener('pointermove', function (e) {
       var r = palco.getBoundingClientRect();
-      solto = false;
       alvoX = (e.clientX - r.left) / r.width; alvoY = (e.clientY - r.top) / r.height;
       animar();
     });
-    palco.addEventListener('pointerleave', function () { solto = true; });
-    /* Sem mouse por perto, a lente passeia sozinha enquanto está na tela */
-    if (!reduz) {
-      var visivel = false;
-      new IntersectionObserver(function (es) {
-        visivel = es[0].isIntersecting;
-        if (visivel) requestAnimationFrame(passear);
-      }).observe(palco);
-      function passear(t) {
-        if (!visivel) return;
-        if (solto) {
-          alvoX = .5 + Math.sin(t / 1900) * .36;
-          alvoY = .5 + Math.sin(t / 1300) * .26;
-          animar();
-        }
-        requestAnimationFrame(passear);
-      }
-    }
   }
 
   /* Trilho de fotos arrastável com o mouse */

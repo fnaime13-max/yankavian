@@ -31,7 +31,7 @@
   /* Escamas: amostradas dentro das asas em grade com desvio */
   var escamas = [];
   (function () {
-    var passo = fino ? 8 : 11;
+    var passo = 11;
     var aux = document.createElement('canvas').getContext('2d');
     aux.lineWidth = 22;
     for (var x = 0; x < 340; x += passo) for (var y = -240; y < 240; y += passo) {
@@ -39,7 +39,7 @@
       var dentro = aux.isPointInPath(FRENTE, px, py) ? 1 : aux.isPointInPath(TRAS, px, py) ? 2 : 0;
       if (!dentro) continue;
       if (aux.isPointInStroke(dentro === 1 ? FRENTE : TRAS, px, py)) continue;
-      escamas.push({ x: px, y: py, r: Math.hypot(px, py) / 340, n: Math.random(), a: dentro, ox: [0, 0], oy: [0, 0] });
+      escamas.push({ x: px, y: py, r: Math.hypot(px, py) / 340, n: Math.random(), a: dentro });
     }
   })();
   var baldes = [];
@@ -56,11 +56,14 @@
   function medir() {
     dpr = Math.min(devicePixelRatio || 1, 1.5);
     W = innerWidth; H = innerHeight;
-    tela.width = W * dpr; tela.height = H * dpr;
     pousos = [].slice.call(document.querySelectorAll('[data-pouso]')).filter(function (e) { return e.offsetParent !== null; });
     if (reduz && !modoCarga()) escolherPouso(true);
   }
   function modoCarga() { return modo === 'carga'; }
+
+  /* Lê o layout no máximo uma vez por quadro */
+  var alvoGuardado = null;
+  function alvoAtual() { return alvoGuardado || (alvoGuardado = alvoDe(pouso)); }
 
   function alvoDe(e) {
     var r = e.getBoundingClientRect();
@@ -92,7 +95,7 @@
   }
 
   function soltarPo(x, y, n, forca, fase) {
-    for (var i = 0; i < n && po.length < 240; i++) {
+    for (var i = 0; i < n && po.length < 80; i++) {
       var a = Math.random() * 6.283, v = (.3 + Math.random()) * forca;
       po.push({ x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - .2, v: 1, t: fase + Math.random() * .2, s: 1.2 + Math.random() * 2.2 });
     }
@@ -107,14 +110,14 @@
     if (modo === 'carga') {
       velBatida = .03; base = .5; amp = .12;
     } else if (modo === 'pousada' && pouso) {
-      var a = alvoDe(pouso);
+      var a = alvoAtual();
       X += (a.x - X) * .3; Y += (a.y - Y) * .3; E += (a.e - E) * .08;
       G += (a.g + (ponteiro.x > 0 ? (ponteiro.x - X) / W * .16 : 0) - G) * .06;
       var d = Math.hypot(ponteiro.x - X, ponteiro.y - Y);
       ponteiro.perto += ((d < 330 * E ? 1 : 0) - ponteiro.perto) * .1;
       velBatida = .035 + ponteiro.perto * .1; amp = .2 + ponteiro.perto * .12;
     } else {
-      var alvo = visita || (pouso ? alvoDe(pouso) : { x: W / 2, y: H / 2, e: E, g: 0 });
+      var alvo = visita || (pouso ? alvoAtual() : { x: W / 2, y: H / 2, e: E, g: 0 });
       var ax = alvo.x + Math.sin(relogio * .05) * 26, ay = alvo.y + Math.cos(relogio * .067) * 18;
       vx += (ax - X) * .0055; vy += (ay - Y) * .0055;
       vx *= .93; vy *= .93;
@@ -122,10 +125,9 @@
       if (alvo.e) E += (alvo.e - E) * .035;
       G += (Math.max(-.7, Math.min(.7, vx * .018)) + (alvo.g || 0) * .3 - G) * .08;
       velBatida = .34; base = .78; amp = .56;
-      if (relogio % 3 === 0) soltarPo(X, Y, 1, .5, ponteiro.fase + matiz);
       if (visita && visita.ate < relogio) visita = null;
       if (!visita && pouso) {
-        var fim = alvoDe(pouso);
+        var fim = alvoAtual();
         if (Math.hypot(fim.x - X, fim.y - Y) < 26) { modo = 'pousada'; vx = vy = 0; }
       }
     }
@@ -164,11 +166,10 @@
       ctx.clip(caminho);
 
       /* Escamas soltas dão a textura; só desenhamos quando o tamanho compensa */
-      if (E > .12) {
-        var i, q, pulo = E < .2 ? 2 : 1;
+      if (modo === 'carga') {
+        var i, q;
         for (i = 0; i < TONS; i++) baldes[i].length = 0;
-        var li = lado > 0 ? 0 : 1;
-        for (i = 0; i < escamas.length; i += pulo) {
+        for (i = 0; i < escamas.length; i++) {
           q = escamas[i];
           if (q.a !== m[1]) continue;
           var v = (fase + q.r * .42 + q.n * .13) % 1; if (v < 0) v += 1;
@@ -183,7 +184,7 @@
           ctx.beginPath();
           for (var j = 0; j < lista.length; j++) {
             q = lista[j];
-            ctx.rect(q.x + q.ox[li], q.y + q.oy[li], lado2, lado2 * .72);
+            ctx.rect(q.x, q.y, lado2, lado2 * .72);
           }
           ctx.fill();
         }
@@ -239,51 +240,28 @@
     ctx.fill();
   }
 
-  function afetarEscamas() {
-    if (ponteiro.x < 0 || E < .12) return;
-    var dx = ponteiro.x - X, dy = ponteiro.y - Y;
-    var co = Math.cos(-G), si = Math.sin(-G);
-    var lx = (dx * co - dy * si) / E, ly = (dx * si + dy * co) / E;
-    var perto = Math.abs(lx) < 420 && Math.abs(ly) < 300;
-    var c = Math.max(.06, Math.cos(abertura));
-    for (var i = 0; i < escamas.length; i++) {
-      var q = escamas[i];
-      for (var k = 0; k < 2; k++) {
-        if (perto) {
-          var ex = q.x * c * (k ? -1 : 1) - lx, ey = q.y - ly, d = ex * ex + ey * ey;
-          if (d < 7000) {
-            var f = (1 - d / 7000) * 2.4 / (Math.sqrt(d) + 8);
-            q.ox[k] += ex * f; q.oy[k] += ey * f;
-          }
-        }
-        q.ox[k] *= .9; q.oy[k] *= .9;
-      }
-    }
+  /* A tela acompanha a borboleta: quanto menor, menos a placa de vídeo trabalha */
+  var ladoTela = 0;
+  function ajustarTela() {
+    var lado = Math.ceil((E * 720 + 90) / 60) * 60;
+    if (lado === ladoTela) return;
+    ladoTela = lado;
+    tela.width = tela.height = lado * dpr;
+    tela.style.width = tela.style.height = lado + 'px';
   }
 
   function desenhar() {
+    ajustarTela();
+    var ox = X - ladoTela / 2, oy = Y - ladoTela / 2;
+    tela.style.transform = 'translate3d(' + ox.toFixed(1) + 'px,' + oy.toFixed(1) + 'px,0)';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, W, H);
+    ctx.clearRect(0, 0, ladoTela, ladoTela);
 
     var fase = .02 + ponteiro.fase + abertura * .16 + matiz + relogio * .0006;
     ctx.save();
-    ctx.translate(X, Y);
+    ctx.translate(ladoTela / 2, ladoTela / 2);
     ctx.rotate(G);
     ctx.scale(E, E);
-
-    if (modo === 'pousada' && E > .2) {
-      ctx.save();
-      ctx.translate(10 / E, 16 / E);
-      ctx.globalAlpha = .07;
-      ctx.fillStyle = '#15111A';
-      [-1, 1].forEach(function (l) {
-        ctx.save();
-        ctx.scale(l * Math.cos(abertura), 1);
-        ctx.fill(FRENTE); ctx.fill(TRAS);
-        ctx.restore();
-      });
-      ctx.restore();
-    }
 
     if (progresso > 0) {
       asa(1, abertura + guinada, fase);
@@ -297,46 +275,48 @@
       var p = po[i];
       ctx.globalAlpha = Math.max(0, p.v) * .85;
       ctx.fillStyle = tom(p.t);
-      ctx.fillRect(p.x, p.y, p.s, p.s);
+      ctx.fillRect(p.x - ox, p.y - oy, p.s, p.s);
     }
     ctx.globalAlpha = 1;
   }
 
-  /* Passo fixo de 60 Hz: o voo tem a mesma velocidade em qualquer tela */
-  var PASSO = 1000 / 60, anterior = 0, acumulado = 0;
+  /* Passo fixo de 60 Hz: o voo tem a mesma velocidade em qualquer tela.
+     Pousada, ela só bate as asas devagar, então desenhamos a 30 quadros. */
+  var PASSO = 1000 / 60, anterior = 0, acumulado = 0, alternar = false;
   function quadro(agora) {
-    acumulado += Math.min(100, agora - (anterior || agora));
+    requestAnimationFrame(quadro);
+    acumulado += Math.min(60, agora - (anterior || agora));
     anterior = agora;
+    if (acumulado < PASSO) return;
+    alvoGuardado = null;
     while (acumulado >= PASSO) {
       movimento();
-      afetarEscamas();
       acumulado -= PASSO;
     }
+    alternar = !alternar;
+    if (modo === 'pousada' && alternar) return;
+    if (Y < -ladoTela || Y > H + ladoTela) return;
     desenhar();
-    requestAnimationFrame(quadro);
   }
 
-  var ultimoX = 0, ultimoY = 0;
   addEventListener('pointermove', function (e) {
     ponteiro.x = e.clientX; ponteiro.y = e.clientY;
     ponteiro.faseAlvo = (e.clientX / W) * .34 + (e.clientY / H) * .22;
-    if (reduz) return;
-    var d = Math.hypot(e.clientX - ultimoX, e.clientY - ultimoY);
-    if (fino && d > 18 && modo !== 'carga') {
-      soltarPo(e.clientX, e.clientY, 1, .35, ponteiro.fase + matiz);
-      ultimoX = e.clientX; ultimoY = e.clientY;
-    }
   }, { passive: true });
 
   addEventListener('pointerdown', function (e) {
     if (reduz || modo === 'carga') return;
     if (e.target.closest && e.target.closest('a,button,[data-sem-voo]')) return;
-    soltarPo(e.clientX, e.clientY, 26, 2.2, ponteiro.fase + matiz);
     visita = { x: e.clientX, y: e.clientY, e: Math.min(E, .24), ate: relogio + 110 };
     modo = 'voo';
   });
 
-  addEventListener('scroll', function () { reduz ? escolherPouso(true) : escolherPouso(); }, { passive: true });
+  var esperaPouso = 0;
+  addEventListener('scroll', function () {
+    if (reduz) return escolherPouso(true);
+    if (esperaPouso) return;
+    esperaPouso = setTimeout(function () { esperaPouso = 0; escolherPouso(); }, 140);
+  }, { passive: true });
   addEventListener('resize', medir);
 
   window.Borboleta = {
@@ -354,7 +334,7 @@
     },
     soltar: function () {
       progresso = 1;
-      soltarPo(X, Y, 90, 3.4, .1);
+      soltarPo(X, Y, 40, 2.6, .1);
       vy = -5; modo = 'voo';
       pousos = [].slice.call(document.querySelectorAll('[data-pouso]')).filter(function (e) { return e.offsetParent !== null; });
       pouso = null; escolherPouso();
