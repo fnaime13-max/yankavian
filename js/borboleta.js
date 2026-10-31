@@ -15,7 +15,7 @@
   var PONTOS_F = [[286, -196], [290, -166], [274, -130], [250, -96], [220, -62]];
   var PONTOS_T = [[202, 96], [204, 140], [178, 182], [134, 208]];
 
-  var PALETA = [[34, 88, 224], [112, 58, 214], [214, 36, 132], [238, 96, 112], [240, 182, 92], [214, 36, 132], [112, 58, 214]];
+  var PALETA = [[14, 104, 68], [34, 148, 98], [122, 176, 84], [212, 168, 67], [243, 223, 162], [212, 168, 67], [34, 148, 98]];
   var TONS = 64;
   var CORES = [];
   (function () {
@@ -200,22 +200,22 @@
       ctx.fillStyle = b;
       ctx.fillRect(-10, -240, 350, 480);
 
-      ctx.strokeStyle = '#15111A';
+      ctx.strokeStyle = '#0F2A21';
       ctx.lineWidth = 22;
       ctx.stroke(caminho);
       ctx.lineWidth = 1.6;
-      ctx.strokeStyle = 'rgba(21,17,26,.55)';
+      ctx.strokeStyle = 'rgba(15,42,33,.55)';
       ctx.beginPath();
       linhasDaAsa(m[4], m[5]);
       ctx.stroke();
-      ctx.fillStyle = '#EBCB95';
+      ctx.fillStyle = '#E4C376';
       ctx.beginPath();
       m[6].forEach(function (p) { ctx.moveTo(p[0] + 4, p[1]); ctx.arc(p[0], p[1], 3.6, 0, 6.3); });
       ctx.fill();
       ctx.restore();
 
       /* Fio dourado do logo: na abertura ele se desenha antes da cor chegar */
-      ctx.strokeStyle = '#EBCB95';
+      ctx.strokeStyle = '#E4C376';
       ctx.lineWidth = Math.min(3.4, 1.5 / E);
       if (!cheio) ctx.setLineDash([1000 * Math.min(1, progresso * 1.5), 1000]);
       ctx.stroke(caminho);
@@ -225,16 +225,16 @@
   }
 
   function corpo() {
-    ctx.fillStyle = '#15111A';
+    ctx.fillStyle = '#0F2A21';
     ctx.beginPath(); ctx.ellipse(0, -2, 8, 30, 0, 0, 6.3); ctx.fill();
     ctx.beginPath(); ctx.ellipse(0, 52, 5.4, 42, 0, 0, 6.3); ctx.fill();
     ctx.beginPath(); ctx.arc(0, -38, 8, 0, 6.3); ctx.fill();
-    ctx.strokeStyle = '#15111A'; ctx.lineWidth = 2.2;
+    ctx.strokeStyle = '#0F2A21'; ctx.lineWidth = 2.2;
     ctx.beginPath();
     ctx.moveTo(-2, -44); ctx.quadraticCurveTo(-18, -110, -58, -138);
     ctx.moveTo(2, -44); ctx.quadraticCurveTo(18, -110, 58, -138);
     ctx.stroke();
-    ctx.fillStyle = '#EBCB95';
+    ctx.fillStyle = '#E4C376';
     ctx.beginPath();
     ctx.arc(-58, -138, 3.4, 0, 6.3); ctx.moveTo(61, -138); ctx.arc(58, -138, 3.4, 0, 6.3);
     ctx.fill();
