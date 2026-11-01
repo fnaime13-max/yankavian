@@ -346,6 +346,36 @@ html.js .sublinha:not(.visivel) { background-size: 0 3px; }
 .passos li::before { content: counter(p); position: absolute; left: 4px; top: 8px; font: 400 2rem/1.3 var(--titulo); color: var(--verde); }
 .pouso--consulta { right: 16%; top: 12%; }
 
+/* Depoimentos */
+.historias { background: var(--seda); padding: var(--secao) var(--margem); }
+.historias__cab { max-width: var(--largura); margin: 0 auto var(--e5); }
+.historias__cab h2 { max-width: 16em; }
+.historias__grade {
+  max-width: var(--largura); margin: 0 auto;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.75fr);
+  gap: var(--e3); align-items: start;
+}
+.depo__tela { position: relative; overflow: hidden; border-radius: 14px; background: var(--floresta); }
+.depo--vertical .depo__tela { aspect-ratio: 9 / 16; }
+.depo--deitado .depo__tela { aspect-ratio: 16 / 9; }
+.depo video, .depo img { width: 100%; height: 100%; object-fit: cover; }
+.depo figcaption { margin-top: 10px; font: 500 italic 1.1rem/1.3 var(--acento); }
+.depo__play { position: absolute; inset: 0; width: 100%; background: none; border: 0; cursor: pointer; }
+.depo__play[hidden] { display: none; }
+.depo__play span {
+  position: absolute; left: 50%; top: 50%; width: 76px; height: 76px; margin: -38px 0 0 -38px;
+  border-radius: 50%; background: var(--ouro); transition: transform .2s var(--saida);
+}
+.depo__play span::after {
+  content: ''; position: absolute; left: 30px; top: 23px;
+  border-style: solid; border-width: 15px 0 15px 24px; border-color: transparent transparent transparent var(--floresta);
+}
+.depo__play:active span { transform: scale(.94); }
+@media (hover: hover) and (pointer: fine) {
+  .depo__play:hover span { transform: scale(1.08); }
+}
+.historias__nota { margin: var(--e3) 0; font-size: 1rem; max-width: 32em; }
+
 /* Desafio */
 .desafio {
   position: relative; overflow: hidden;
@@ -449,6 +479,8 @@ html.js .sublinha:not(.visivel) { background-size: 0 3px; }
 }
 
 @media (max-width: 760px) {
+  .historias__grade { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+  .depo--deitado { grid-column: 1 / -1; margin-top: var(--e2); }
   .pilares { grid-template-columns: 1fr; gap: var(--e3); }
   .pilares li { padding-left: 18px; border-left: 3px solid var(--verde); }
   .trilha svg { height: 96px; }

@@ -159,6 +159,18 @@
     });
   }
 
+  /* Depoimentos: o vídeo só carrega no clique, e um pausa o outro */
+  var videos = [].slice.call(document.querySelectorAll('.depo video'));
+  videos.forEach(function (v) {
+    var botao = v.parentElement.querySelector('.depo__play');
+    v.controls = false;
+    botao.addEventListener('click', function () { v.controls = true; v.play(); });
+    v.addEventListener('play', function () {
+      botao.hidden = true;
+      videos.forEach(function (o) { if (o !== v) o.pause(); });
+    });
+  });
+
   /* Trilho de fotos arrastável com o mouse */
   var trilho = document.querySelector('.trilho');
   if (trilho) {
