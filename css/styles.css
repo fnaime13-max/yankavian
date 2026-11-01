@@ -329,7 +329,7 @@ html.js:not(.entrou) .assina { opacity: 0; transform: translateY(20px); }
   align-items: start;
 }
 .consulta__foto { position: sticky; top: 100px; overflow: hidden; border-radius: 200px 200px 14px 14px; }
-.consulta__foto img { width: 100%; max-height: calc(100vh - 130px); object-fit: cover; object-position: 50% 28%; }
+.consulta__foto img { width: 100%; max-height: calc(100vh - 130px); object-fit: cover; object-position: 50% 20%; }
 .consulta__texto { position: relative; }
 .sentir { margin: var(--e3) 0 var(--e4); }
 .sentir li { font: 400 clamp(1.5rem, 2.6vw, 2.2rem)/1.2 var(--titulo); padding: 7px 0; }
