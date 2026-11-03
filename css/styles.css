@@ -190,7 +190,7 @@ html.js.carregando .nicho__luz { opacity: 0; }
 html.entrou .nicho__luz { animation: ligar 1.3s linear .35s backwards; }
 @keyframes ligar { 0% { opacity: 0; } 12% { opacity: .7; } 22% { opacity: .1; } 38% { opacity: .8; } 50% { opacity: .3; } 100% { opacity: .85; } }
 .nicho__recorte { position: relative; clip-path: url(#nicho); background: #E4E3DE; aspect-ratio: 5 / 6.5; overflow: hidden; }
-.nicho__recorte img { width: 100%; height: 100%; object-fit: cover; object-position: 40% 60%; }
+.nicho__recorte img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
 html.js:not(.entrou) .hero .selo,
 html.js:not(.entrou) .hero__sub,
 html.js:not(.entrou) .acoes,
@@ -458,7 +458,7 @@ html.js .sublinha:not(.visivel) { background-size: 0 3px; }
   .hero__foto { order: -1; }
   .nicho { margin: 0 auto; max-width: min(100%, 460px); }
   .nicho__recorte { aspect-ratio: auto; height: min(42svh, 400px); }
-  .nicho__recorte img { object-position: 40% 42%; }
+  .nicho__recorte img { object-position: 50% 28%; }
   .pouso--hero { left: 24%; top: 17%; }
   .acoes { margin-top: var(--e3); }
   .assina { margin-top: var(--e3); }

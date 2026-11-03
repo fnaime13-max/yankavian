@@ -4,8 +4,8 @@ window.CONFIG = {
   instagram: 'https://www.instagram.com/nutriyankavian/',
 
   /* Deixe vazio enquanto não houver confirmação: o site mostra {{PREENCHER}} */
-  crn: '',
-  formacao: '',
+  crn: '68504',
+  formacao: 'Nutricionista',
 
   mensagens: {
     consulta: 'Olá, gostaria de saber mais sobre a consulta!',
