@@ -13,6 +13,9 @@ window.CONFIG = {
     luxo: 'Olá, Yanka! Vi seu site e o luxo que eu quero de volta é: '
   },
 
+  /* Grupo do WhatsApp da lista de espera do Desafio Desinflame */
+  listaEspera: 'https://chat.whatsapp.com/IZwajkeUOgRHtitGljUh2u',
+
   /* false esconde a seção do Desafio Desinflame */
   desafio: true
 };

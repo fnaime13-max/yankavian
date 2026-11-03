@@ -391,7 +391,22 @@ html.js .sublinha:not(.visivel) { background-size: 0 3px; }
 .desafio__texto p:last-child { margin-top: var(--e2); }
 .desafio__lado li { padding: 8px 0 8px 22px; position: relative; font-weight: 500; }
 .desafio__lado li::before { content: ''; position: absolute; left: 0; top: 1.05em; width: 9px; height: 9px; border-radius: 50%; background: var(--ouro); }
-.desafio__lado p { margin: var(--e2) 0 var(--e3); }
+.convite {
+  margin-top: var(--e4); padding: clamp(22px, 3vw, 32px);
+  border: 1px solid rgba(228, 195, 118, .55); border-radius: 18px;
+  background: rgba(255, 253, 246, .07);
+}
+.convite__aviso { display: flex; align-items: center; gap: 10px; font-size: .86rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ouro); }
+.convite__ponto { position: relative; width: 9px; height: 9px; border-radius: 50%; background: #9BE3B4; }
+.convite__ponto::after { content: ''; position: absolute; inset: -5px; border-radius: 50%; border: 1.5px solid #9BE3B4; animation: aviso 2.2s var(--saida) infinite; }
+@keyframes aviso { from { transform: scale(.5); opacity: 1; } to { transform: scale(1.6); opacity: 0; } }
+.convite__mes { margin-top: 12px; font: 400 clamp(1.7rem, 2.8vw, 2.4rem)/1.12 var(--titulo); }
+.convite__mes em { color: var(--ouro); font-weight: 700; }
+.convite__texto { margin: 12px 0 var(--e3); max-width: 30em; }
+.btn--ouro { background: var(--ouro); color: var(--floresta); }
+@media (hover: hover) and (pointer: fine) {
+  .btn--ouro:hover { background: #F0D898; }
+}
 
 /* Fim */
 .fim { background: var(--floresta); color: var(--perola); display: grid; grid-template-columns: 1fr 1fr; }
@@ -497,7 +512,7 @@ html.js .sublinha:not(.visivel) { background-size: 0 3px; }
   html { scroll-behavior: auto; }
   html.js .rv { opacity: 1; transform: none; transition: none; }
   .btn, .zap, .luxo button, .luxo__corpo { transition: none; }
-  .zap { animation: none; }
+  .zap, .convite__ponto::after { animation: none; }
   .nicho__luz { animation: none !important; }
   .leituras.visivel::after, .fita__trilho { animation: none; }
   .dias li::after { transform: none; opacity: 1; }

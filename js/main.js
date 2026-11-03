@@ -9,6 +9,7 @@
 
   /* Dados */
   document.querySelectorAll('[data-wa]').forEach(function (a) { a.href = linkWa(C.mensagens[a.dataset.wa]); });
+  document.querySelectorAll('[data-link]').forEach(function (a) { if (C[a.dataset.link]) a.href = C[a.dataset.link]; });
   document.querySelectorAll('[data-ig]').forEach(function (a) { a.href = C.instagram; });
   document.querySelectorAll('[data-dado]').forEach(function (el) {
     var v = C[el.dataset.dado];
